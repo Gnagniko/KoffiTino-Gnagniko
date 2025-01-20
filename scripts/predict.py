@@ -31,4 +31,7 @@ def predict(density, volatile_acidity, chlorides, is_red, alcohol, wine_id=None)
     # pred_client.record(feature_values, prediction, event_id=custid)
     data_capture_client.capturePrediction(feature_values, prediction,event_id=wine_id)
 
-    return dict(prediction=prediction[0])
+    return dict(prediction=prediction[0])  
+
+print("test")
+    
