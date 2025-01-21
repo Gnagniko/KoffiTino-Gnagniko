@@ -16,13 +16,3 @@ domino_project =domino.Domino(project = str(os.environ.get('DOMINO_PROJECT_OWNER
 # First we will start our sklearn model training 
 print('Kicking off sklearn model training')
 domino_project.job_start(command='scripts/sklearn_model_train.py')
-
-# Then our xgboost written in R
-print('Kicking off R model training')
-# domino_project.job_start(command='scripts/R_model_train.R')
-
-# And finally our h2o automl model training
-print('Kicking off h2o model training')
-# domino_project.job_start(command='scripts/h2o_model_train.py')
-
-print('Done!')
