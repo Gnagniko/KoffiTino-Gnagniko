@@ -1,36 +1,34 @@
-import pickle
-import uuid
 import datetime
-import numpy as np
+import uuid
+import pickle
+from domino_data_capture.data_capture_client import DataCaptureClient
 
+# Load your model
 model_file_name = "/mnt/code/models/sklearn_gbm.pkl"
 model = pickle.load(open(model_file_name, 'rb'))
 
-# from domino_prediction_logging.prediction_client import PredictionClient
-from domino_data_capture.data_capture_client import DataCaptureClient
-
+# Define features and target
 features = ['density', 'volatile_acidity', 'chlorides', 'is_red', 'alcohol']
-
 target = ["quality"]
 
-# pred_client = PredictionClient(features, target)
+# Initialize DataCaptureClient
 data_capture_client = DataCaptureClient(features, target)
 
 def predict(density, volatile_acidity, chlorides, is_red, alcohol, wine_id=None):
     feature_values = [density, volatile_acidity, chlorides, is_red, alcohol]
     prediction = model.predict([feature_values]).tolist()
 
-
-    # Record eventID and current time
+    # Generate event ID and timestamp
     if wine_id is None:
-        print("No ID found! Creating a new one.")
-        wine_id = str(datetime.datetime.now())
-        # custid = uuid.uuid4()
-    print('Wine ID is: {}'.format(wine_id))
+        wine_id = str(uuid.uuid4())
+    event_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    # pred_client.record(feature_values, prediction, event_id=custid)
-    data_capture_client.capturePrediction(feature_values, prediction,event_id=wine_id)
+    # Capture prediction
+    data_capture_client.capturePrediction(
+        feature_values,
+        prediction,
+        event_id=wine_id,
+        timestamp=event_time
+    )
 
-    return dict(prediction=prediction[0])  
-
-    
+    return dict(prediction=prediction[0])
